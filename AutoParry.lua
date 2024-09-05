@@ -84,6 +84,9 @@ end)
 AutoSpamButton.MouseButton1Click:Connect(function()
     AutoSpamEnabled = not AutoSpamEnabled
     AutoSpamButton.Text = AutoSpamEnabled and "Auto Spam: ON" or "Auto Spam: OFF"
+    if AutoSpamEnabled then
+        AutoSpam()
+    end
 end)
 
 local function AutoParry()
@@ -91,7 +94,7 @@ local function AutoParry()
         wait(0.1)
         for _, ball in pairs(workspace:GetChildren()) do
             if ball:IsA("Part") and ball.Name == "Ball" then
-                local distance = (HumanoidRootPart.Position - ball.Position).Magnitude
+                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - ball.Position).Magnitude
                 local parryDistance = 10
                 if ParryTiming == "Very Early" then
                     parryDistance = 20
@@ -114,11 +117,9 @@ local function AutoSpam()
     while AutoSpamEnabled do
         wait(0.1)
         for _, player in pairs(game.Players:GetPlayers()) do
-            if player ~= LocalPlayer and (HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude < 5 then
-                game:GetService("ReplicatedStorage").Events.Attack:FireServer()
+            if player ~= game.Players.LocalPlayer then
+                game:GetService("ReplicatedStorage").Events.Spam:FireServer(player)
             end
         end
     end
 end
-
-AutoSpam()
